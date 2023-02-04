@@ -19,6 +19,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/*
+    Bro I am not going to translate this retarded LicenseManager
+    It's basically saying what version are you using and all those authorization stuff
+    Just delete this LicenseManager if needed
+*/
 public final class LicenseManager
 {
     public static final String KEY_ALGORITHM = "RSA";
@@ -63,7 +68,7 @@ public final class LicenseManager
             final List<String> list = Arrays.asList((String[])licenseMap.values().toArray(new String[ 0 ]));
             Collections.sort(list, String::compareTo);
             if (! StringUtils.equals(encodeHex(digest(join(list.iterator(), "").getBytes(), "MD5", null, 88)), updateCode)) {
-                throw new Exception("您当前的版本为未授权版本");
+                throw new Exception("You are using a unauthorized version");
             }
         }
         catch (Exception e) {

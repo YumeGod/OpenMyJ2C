@@ -40,7 +40,7 @@ public class SetupManager
             downloadZigCompiler(fileName, dirName);
             return;
         }
-        System.out.println("暂不支付该系统类型,请联系开发者");
+        System.out.println("Current OS not supported");
     }
     
     private static String getPlatformTypeName() {
@@ -88,27 +88,27 @@ public class SetupManager
                 final String compilePath = currentDir + File.separator + dirName + File.separator + "zig" + (isWindows() ? ".exe" : "");
                 if (Files.exists(Paths.get(compilePath, new String[0]), new LinkOption[0])) {
                     final ProcessHelper.ProcessResult compileRunresult = ProcessHelper.run(Paths.get(currentDir + File.separator + dirName, new String[0]), 160000L, Arrays.asList(compilePath, "version"));
-                    System.out.println("\nzig安装版本:" + compileRunresult.stdout);
+                    System.out.println("\nzig version:" + compileRunresult.stdout);
                     if (compileRunresult.stdout.contains("0.9.1")) {
-                        System.out.println("交叉编译工具已安装:" + currentDir + File.separator + dirName);
+                        System.out.println("Installing compile tool:" + currentDir + File.separator + dirName);
                         return;
                     }
                 }
                 FileUtils.clearDirectory(currentDir + File.separator + dirName);
             }
-            System.out.println("正在下载交叉编译工具");
-            System.out.println("下载链接：https://ziglang.org/download/0.9.1/" + fileName);
+            System.out.println("Downloading compile tool:");
+            System.out.println("Downloading from：https://ziglang.org/download/0.9.1/" + fileName);
             final InputStream in = new URL("https://ziglang.org/download/0.9.1/" + fileName).openStream();
             Files.copy(in, Paths.get(currentDir + File.separator + fileName, new String[0]), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("下载完成,正在解压");
+            System.out.println("Download success");
             unzipFile(currentDir, fileName, currentDir);
             deleteFile(currentDir, fileName + ".temp");
             deleteFile(currentDir, fileName);
-            System.out.println("安装交叉编译工具完成");
+            System.out.println("Install success");
             if (!isWindows()) {
                 final String compilePath2 = currentDir + File.separator + dirName + File.separator + "zig";
                 ProcessHelper.run(Paths.get(currentDir, new String[0]), 160000L, Arrays.asList("chmod", "777", compilePath2));
-                System.out.println("设置运行权限成功");
+                System.out.println("Execute permission set to 777");
             }
         }
         catch (Exception e) {
@@ -160,7 +160,7 @@ public class SetupManager
                 }
             }
         }
-        System.out.println("获取zig临时文件目录失败");
+        System.out.println("Failed to get zig temp directory");
         return "";
     }
     

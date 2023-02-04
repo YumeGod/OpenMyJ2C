@@ -155,7 +155,7 @@ public class NativeObfuscator {
              ZipOutputStream source = new ZipOutputStream(Files.newOutputStream(tempFile, new OpenOption[0]));){
             Manifest mf;
             JarFile jar = new JarFile(jarFile);
-            System.out.println("Parsing " + jarFile + "...");
+            System.out.println("Resolving " + jarFile + "...");
             this.nativeDir = "myj2c/" + NativeObfuscator.getRandomString(6);
             this.bootstrapMethodsPool = new BootstrapMethodsPool(this.nativeDir);
             this.staticClassProvider = new InterfaceStaticClassProvider(this.nativeDir);
@@ -417,26 +417,26 @@ public class NativeObfuscator {
             catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println("Found " + classNumber.get() + " class files, " + methodNumber.get() + " methods requires MYJ2C compilation");
+            System.out.println("Total found " + classNumber.get() + " classes and " + methodNumber.get() + " method that's going to be obfuscated");
             if ("1".equals(LicenseManager.getValue("type"))) {
                 if (methodNumber.get() > Integer.parseInt(LicenseManager.getValue("method")) || classNumber.get() > Integer.parseInt(LicenseManager.getValue("class"))) {
-                    System.out.println("You are using a personal license, and the classes or methods that need to be compiled exceed the maximum number！！！");
+                    System.out.println("You are using personal version, method/class limit reached");
                     return;
                 }
-                System.out.println("Will compile it for you with a personal license！！！\n");
+                System.out.println("Going to obfuscate using personal version\n");
             } else if ("2".equals(LicenseManager.getValue("type"))) {
-                System.out.println("will compile for you with a professional license！！！\n");
+                System.out.println("Going to obfuscate using professional version\n");
             }
             boolean free = false;
             if (StringUtils.isEmpty(LicenseManager.getValue("type"))) {
                 if (methodNumber.get() == 1 && classNumber.get() == 1) {
                     free = true;
-                    System.out.println("Will use the free version license to compile for you, the compiled file will not expire！！！\n");
+                    System.out.println("Going to obfuscate using free version, the obfuscated file will not expire\n");
                 } else {
-                    System.out.println("Will use the trial version to compile for you, the currently compiled program will expire after one week, and will not run normally after the expiration！！！\n");
+                    System.out.println("Going to obfuscate using trial version, the obfuscated file will be expired after 1 week\n");
                 }
             }
-            System.out.println("Converting class files into C language code");
+            System.out.println("Translating classes into C code");
             BufferedWriter mainWriter = Files.newBufferedWriter(cppDir.resolve("myj2c.c"), new OpenOption[0]);
             mainWriter.append("#include <jni.h>\n#include <stdatomic.h>\n#include <string.h>\n#include <time.h>\n#include <stdbool.h>\n#include <math.h>\n\n");
             String signCode = "8964";
@@ -520,7 +520,7 @@ public class NativeObfuscator {
             }
             mainWriter.close();
             if (StringUtils.isEmpty(plainLibName)) {
-                System.out.println("开始编译动态链接库文件");
+                System.out.println("Start compiling DLL");
                 ArrayList<String> libNames = new ArrayList<String>();
                 Iterator<String> iterator = config.getTargets().iterator();
                 while (iterator.hasNext()) {
@@ -611,16 +611,16 @@ public class NativeObfuscator {
                     }
                     Path parent = Paths.get(System.getProperty("user.dir"), new String[0]).getParent();
                     ProcessHelper.ProcessResult compileRunresult = ProcessHelper.run(outputDir, 600000L, Arrays.asList(parent.toFile().getAbsolutePath() + separator + "zig-" + currentOSName + "-" + currentPlatformTypeName + "-0.9.1" + separator + "zig" + (SetupManager.isWindows() ? ".exe" : ""), "cc", "-O2", "-fno-sanitize=undefined", "-funroll-loops", "-target", platformTypeName + "-" + osName + "-gnu", "-fPIC", "-shared", "-s", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-I." + separator + "cpp", "-o." + separator + "build" + separator + "lib" + separator + libName, "." + separator + "cpp" + separator + "myj2c.c"));
-                    System.out.println(String.format("编译完成耗时 %dms", compileRunresult.execTime));
+                    System.out.println(String.format("Total time used: %dms", compileRunresult.execTime));
                     libNames.add(libName);
                     compileRunresult.check("zig build");
                 }
-                System.out.println("正在压缩已编译的动态链接库文件");
+                System.out.println("Compressing DLL");
                 DataTool.compress(outputDir + separator + "build" + separator + "lib", outputDir + separator + "data.dat", Integer.getInteger("level", 1));
-                System.out.println("正在重新打包");
+                System.out.println("Repacking");
                 Util.writeEntry(out, this.nativeDir + "/data.dat", Files.readAllBytes(Paths.get(outputDir + separator + "data.dat", new String[0])));
                 try {
-                    System.out.println("清理临时文件");
+                    System.out.println("Cleaning temp files");
                     FileUtils.clearDirectory(outputDir + separator + "cpp");
                     FileUtils.clearDirectory(outputDir + separator + "build");
                     Files.deleteIfExists(Paths.get(outputDir + separator + "data.dat", new String[0]));
@@ -639,7 +639,7 @@ public class NativeObfuscator {
             out.setComment("Created-By MuYang Java to C Bytecode Translator V2022.1009.05 \nQQGROUP:197453088");
             out.closeEntry();
             metadataReader.close();
-            System.out.println("MYJ2C编译任务已成功");
+            System.out.println("MyJ2C task finished!");
         }
     }
 
