@@ -60,10 +60,10 @@ public class Main
                     }
                     catch (Exception e2) {
                         if (e2.getMessage().contains("PKIX path building failed")) {
-                            System.out.println("Failed to request banned hwid, may caused by manually modified system time");
+                            System.out.println("Failed to request banned hwid, may be caused by manually modified system time");
                         }
                         else {
-                            System.out.println("Failed to request banned hwid, may caused by bad internet connection");
+                            System.out.println("Failed to request banned hwid, may be caused by bad internet connection");
                         }
                         return;
                     }

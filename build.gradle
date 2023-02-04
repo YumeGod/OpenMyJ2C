@@ -23,7 +23,7 @@ dependencies {
 group = 'rip.jnic'
 version = '1.0-SNAPSHOT'
 description = 'NativeObfuscator'
-java.sourceCompatibility = JavaVersion.VERSION_1_9
+java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {
     publications {
@@ -44,4 +44,4 @@ jar {
                 'Main-Class': 'rip.jnic.Main')
     }
 }
-targetCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_8
