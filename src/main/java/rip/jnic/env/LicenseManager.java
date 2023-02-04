@@ -33,6 +33,8 @@ public final class LicenseManager
     private static final String DEFAULT_URL_ENCODING = "UTF-8";
     
     public static String getValue(final String key) {
+        if(key.equals("type")) return "2"; //Make always return professional license
+
         if (LicenseManager.cache.get(key) == null) {
             String v = r3().get(key);
             v = ((v == null) ? "" : v);
@@ -158,19 +160,19 @@ public final class LicenseManager
         }
         final String sign = encodeHex(digest(info.get("code").getBytes(), "MD5", null, 88));
         if (!sign.equals(info.get("sign"))) {
-            throw new RuntimeException("您当前的版本为" + version);
+            throw new RuntimeException("Your current version is " + version);
         }
         if (StringUtils.equals("1", type)) {
-            version = "个人版";
+            version = "personal edition";
         }
         else if (StringUtils.equals("2", type)) {
-            version = "专业版";
+            version = "Professional Edition";
         }
-        final String expireDate = info.get("expireDate");
-        final String authInfo = (info.get("name") == null) ? " " : ("授权用户:" + info.get("name") + " ");
+        final String expireDate = "-1";
+        final String authInfo = (info.get("name") == null) ? " " : ("authorized user:" + info.get("name") + " ");
         if (StringUtils.equals("-1", expireDate)) {
             map.put("title", version);
-            map.put("message", "您当前的版本为" + version + "," + authInfo + "非常感谢您对我们产品的认可与支持！");
+            map.put("message", "Your current version is" + version + "," + authInfo + "Thank you very much for your recognition and support of our products！");
         }
         else {
             Date date = null;
@@ -179,7 +181,7 @@ public final class LicenseManager
                 date = simpleDateFormat.parse(expireDate);
             }
             catch (ParseException e2) {
-                throw new RuntimeException("您当前的版本为" + version);
+                throw new RuntimeException("Your current version is" + version);
             }
             final long leftTime = date.getTime() - System.currentTimeMillis();
             final long leftDay = leftTime / 3600000L / 24L;
@@ -193,11 +195,12 @@ public final class LicenseManager
                 map.put("message", "您当前的版本为" + version + "，" + authInfo + "许可到期时间为：" + formatDate(date, "yyyy年MM月dd日") + " 还剩余" + leftDay + "天。");
             }
             else {
-                map.put("message", "您当前的版本为" + version + "，" + authInfo + "许可到期时间为：" + formatDate(date, "yyyy年MM月dd日") + "。");
+                map.put("message", "Your current version is " + version + "，" + authInfo + "The license expires on ：" + formatDate(date, "yyyy年MM月dd日") + "。");
             }
             map.put("title", version + "（剩余" + leftDay + "天）");
         }
         if (!StringUtils.equals("true", info.get("devlop"))) {
+            info.put("devlop","true");
             return map;
         }
         return map;

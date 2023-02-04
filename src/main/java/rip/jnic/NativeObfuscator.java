@@ -143,7 +143,7 @@ public class NativeObfuscator {
         }
         Path cppDir = outputDir.resolve("cpp");
         Files.createDirectories(cppDir, new FileAttribute[0]);
-        Util.copyResource("sources/jni.h", cppDir);
+        Util.copyResource("jni.h", cppDir);
         HashMap map = new HashMap();
         HashMap classNameMap = new HashMap();
         StringBuilder instructions = new StringBuilder();

@@ -1,0 +1,47 @@
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.4'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.4'
+    implementation fileTree(dir: 'libs', include: '*.jar')
+}
+
+group = 'rip.jnic'
+version = '1.0-SNAPSHOT'
+description = 'NativeObfuscator'
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': 'OpenMyJ2C',
+                'Implementation-Version': '1.0',
+                'Main-Class': 'rip.jnic.Main')
+    }
+}
+targetCompatibility = JavaVersion.VERSION_1_8
