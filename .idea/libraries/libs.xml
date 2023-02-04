@@ -1,10 +1,27 @@
 <component name="libraryTable">
   <library name="libs">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/libs" />
+      <root url="jar://$PROJECT_DIR$/libs/junit-platform-commons-1.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/junit-platform-engine-1.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/asm-tree-7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/log4j-core-2.8.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/apiguardian-api-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/log4j-api-2.8.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/junit-jupiter-api-5.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/asm-commons-7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-compress-1.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/asm-analysis-7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/asm-7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/junit-jupiter-engine-5.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/opentest4j-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/log4j-slf4j-impl-2.8.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/picocli-4.6.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/slf4j-api-1.7.24.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/slf4j-api-1.7.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/wstx.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/libs" recursive="false" />
   </library>
 </component>
