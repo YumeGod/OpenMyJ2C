@@ -155,7 +155,7 @@ public class NativeObfuscator {
              ZipOutputStream source = new ZipOutputStream(Files.newOutputStream(tempFile, new OpenOption[0]));){
             Manifest mf;
             JarFile jar = new JarFile(jarFile);
-            System.out.println("正在解析 " + jarFile + "...");
+            System.out.println("Parsing " + jarFile + "...");
             this.nativeDir = "myj2c/" + NativeObfuscator.getRandomString(6);
             this.bootstrapMethodsPool = new BootstrapMethodsPool(this.nativeDir);
             this.staticClassProvider = new InterfaceStaticClassProvider(this.nativeDir);
@@ -417,26 +417,26 @@ public class NativeObfuscator {
             catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println("共找到 " + classNumber.get() + " 个类文件 " + methodNumber.get() + " 个方法需要MYJ2C编译");
+            System.out.println("Found " + classNumber.get() + " class files, " + methodNumber.get() + " methods requires MYJ2C compilation");
             if ("1".equals(LicenseManager.getValue("type"))) {
                 if (methodNumber.get() > Integer.parseInt(LicenseManager.getValue("method")) || classNumber.get() > Integer.parseInt(LicenseManager.getValue("class"))) {
-                    System.out.println("您使用的是个人版授权,需要编译的类或方法超过最大数量！！！");
+                    System.out.println("You are using a personal license, and the classes or methods that need to be compiled exceed the maximum number！！！");
                     return;
                 }
-                System.out.println("将使用个人版授权为您编译！！！\n");
+                System.out.println("Will compile it for you with a personal license！！！\n");
             } else if ("2".equals(LicenseManager.getValue("type"))) {
-                System.out.println("将使用专业版授权为您编译！！！\n");
+                System.out.println("will compile for you with a professional license！！！\n");
             }
             boolean free = false;
             if (StringUtils.isEmpty(LicenseManager.getValue("type"))) {
                 if (methodNumber.get() == 1 && classNumber.get() == 1) {
                     free = true;
-                    System.out.println("将使用免费版授权为您编译,编译文件不会过期！！！\n");
+                    System.out.println("Will use the free version license to compile for you, the compiled file will not expire！！！\n");
                 } else {
-                    System.out.println("将使用试用版授权为您编译,当前编译的程序将在一周后过期,过期后将不能正常运行！！！\n");
+                    System.out.println("Will use the trial version to compile for you, the currently compiled program will expire after one week, and will not run normally after the expiration！！！\n");
                 }
             }
-            System.out.println("正在把class文件转换成C语言代码");
+            System.out.println("Converting class files into C language code");
             BufferedWriter mainWriter = Files.newBufferedWriter(cppDir.resolve("myj2c.c"), new OpenOption[0]);
             mainWriter.append("#include <jni.h>\n#include <stdatomic.h>\n#include <string.h>\n#include <time.h>\n#include <stdbool.h>\n#include <math.h>\n\n");
             String signCode = "8964";
