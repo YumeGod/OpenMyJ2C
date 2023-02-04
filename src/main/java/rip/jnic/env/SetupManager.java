@@ -82,22 +82,28 @@ public class SetupManager
     }
     
     public static void downloadZigCompiler(final String fileName, final String dirName) {
+        if (Files.exists(Paths.get(dirName))) {
+            System.out.println("Found compiler: " + dirName);
+            return;
+        }
+
         try {
             final String currentDir = System.getProperty("user.dir");
-            if (Files.exists(Paths.get(currentDir + File.separator + dirName, new String[0]), new LinkOption[0])) {
-                final String compilePath = currentDir + File.separator + dirName + File.separator + "zig" + (isWindows() ? ".exe" : "");
-                if (Files.exists(Paths.get(compilePath, new String[0]), new LinkOption[0])) {
-                    final ProcessHelper.ProcessResult compileRunresult = ProcessHelper.run(Paths.get(currentDir + File.separator + dirName, new String[0]), 160000L, Arrays.asList(compilePath, "version"));
-                    System.out.println("\nzig version:" + compileRunresult.stdout);
-                    if (compileRunresult.stdout.contains("0.9.1")) {
-                        System.out.println("Installing compile tool:" + currentDir + File.separator + dirName);
-                        return;
-                    }
-                }
-                FileUtils.clearDirectory(currentDir + File.separator + dirName);
-            }
+//            if (Files.exists(Paths.get(currentDir + File.separator + dirName, new String[0]), new LinkOption[0])) {
+//                final String compilePath = currentDir + File.separator + dirName + File.separator + "zig" + (isWindows() ? ".exe" : "");
+//                if (Files.exists(Paths.get(compilePath, new String[0]), new LinkOption[0])) {
+//                    final ProcessHelper.ProcessResult compileRunresult = ProcessHelper.run(Paths.get(currentDir + File.separator + dirName, new String[0]), 160000L, Arrays.asList(compilePath, "version"));
+//                    System.out.println("\nzig version:" + compileRunresult.stdout);
+//                    if (compileRunresult.stdout.contains("0.9.1")) {
+//                        System.out.println("Installing compile tool:" + currentDir + File.separator + dirName);
+//                        return;
+//                    }
+//                }
+//                FileUtils.clearDirectory(currentDir + File.separator + dirName);
+//            }
+
             System.out.println("Downloading compile tool:");
-            System.out.println("Downloading from：https://ziglang.org/download/0.9.1/" + fileName);
+            System.out.println("Downloading from: https://ziglang.org/download/0.9.1/" + fileName);
             final InputStream in = new URL("https://ziglang.org/download/0.9.1/" + fileName).openStream();
             Files.copy(in, Paths.get(currentDir + File.separator + fileName, new String[0]), StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Download success");
