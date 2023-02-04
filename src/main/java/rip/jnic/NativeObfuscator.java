@@ -141,6 +141,10 @@ public class NativeObfuscator {
             outputDir = output.getParent();
             outputName = output.getFileName().toString();
         }
+
+        if (!outputDir.toFile().exists()) {
+            outputDir.toFile().createNewFile();
+        }
         Path cppDir = outputDir.resolve("cpp");
         Files.createDirectories(cppDir, new FileAttribute[0]);
         Util.copyResource("jni.h", cppDir);
@@ -294,6 +298,8 @@ public class NativeObfuscator {
                 ifaceStaticClass.accept(classWriter);
                 Util.writeEntry(out, ifaceStaticClass.name + ".class", classWriter.toByteArray());
             }
+
+            //TODO: Check if myj2c.bin (loader) is safe or replace this code
             Path loader = Files.createTempFile("bin", null, new FileAttribute[0]);
             try {
                 byte[] arrayOfByte = new byte[2048];
@@ -600,11 +606,11 @@ public class NativeObfuscator {
                             currentPlatformTypeName = "";
                         }
                     }
-                    System.out.println("正在编译:" + target);
+                    System.out.println("Target: " + target);
                     String compilePath = System.getProperty("user.dir") + separator + "zig-" + currentOSName + "-" + currentPlatformTypeName + "-0.9.1" + separator + "zig" + (SetupManager.isWindows() ? ".exe" : "");
                     if (Files.exists(Paths.get(compilePath, new String[0]), new LinkOption[0])) {
                         ProcessHelper.ProcessResult compileRunresult = ProcessHelper.run(outputDir, 600000L, Arrays.asList(compilePath, "cc", "-O2", "-fno-sanitize=undefined", "-funroll-loops", "-target", platformTypeName + "-" + osName + "-gnu", "-fPIC", "-shared", "-s", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-I." + separator + "cpp", "-o." + separator + "build" + separator + "lib" + separator + libName, "." + separator + "cpp" + separator + "myj2c.c"));
-                        System.out.println(String.format("编译完成耗时 %dms", compileRunresult.execTime));
+                        System.out.println(String.format("Took %dms", compileRunresult.execTime));
                         libNames.add(libName);
                         compileRunresult.check("zig build");
                         continue;

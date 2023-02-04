@@ -155,7 +155,7 @@ public class Util {
     private static String unicodify(String string) {
         StringBuilder result = new StringBuilder();
         for (char c : string.toCharArray()) {
-            result.append("\\u").append(String.format("%04x", c));
+            result.append("\\u").append(String.format("%04x", (int) c));
         }
         return result.toString();
     }
