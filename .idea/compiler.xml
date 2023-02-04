@@ -9,6 +9,8 @@
         <module name="NativeObfusecator" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.9">
+      <module name="OpenMyJ2C" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
