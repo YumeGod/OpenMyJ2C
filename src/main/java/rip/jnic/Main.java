@@ -32,7 +32,7 @@ public class Main
     
     public static void main(final String[] args) throws IOException {
         System.out.println("                __  _____  __    _____   ______\n               /  |/  /\\ \\/ /   / /__ \\ / ____/\n              / /|_/ /  \\  /_  / /__/ // /     \n             / /  / /   / / /_/ // __// /___   \n            /_/  /_/   /_/\\____//____/\\____/\n\n    MuYang Java to C Bytecode Translator V2022.1009.05\n\n            Copyright (c) MYJ2C 2022-2024\n\n==========================================================\n");
-        System.out.println("Checking authorization...");
+        System.out.println("Not Checking authorization lulz...");
         String key = null;
         final String path = System.getProperty("user.dir") + File.separator + "myj2c.licence";
         if (new File(path).exists()) {
@@ -45,15 +45,13 @@ public class Main
                         final HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                         if (200 != conn.getResponseCode()) {
                             System.out.println("Failed to request banned hwid");
-                            return;
                         }
                         final InputStreamReader inputReader = new InputStreamReader(conn.getInputStream());
                         final BufferedReader bufferedReader = new BufferedReader(inputReader);
                         String temp;
                         while ((temp = bufferedReader.readLine()) != null) {
                             if (!temp.trim().equals("") && key.equals(temp.trim())) {
-                                System.out.println("Your hwid has been banned...");
-                                return;
+                                System.out.println("Your hwid has been banned or you dont have a license... keep going :D");
                             }
                         }
                         bufferedReader.close();
