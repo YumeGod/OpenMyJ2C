@@ -135,15 +135,16 @@ public class NativeObfuscator {
             }
         }).collect(Collectors.toList()));
         String outputName = inputJarPath.getFileName().toString();
+
+        if (!output.toFile().exists()) {
+            Files.createDirectory(output);
+        }
+
         if (output.toFile().isDirectory()) {
             outputDir = output;
         } else {
             outputDir = output.getParent();
             outputName = output.getFileName().toString();
-        }
-
-        if (!outputDir.toFile().exists()) {
-            outputDir.toFile().createNewFile();
         }
         Path cppDir = outputDir.resolve("cpp");
         Files.createDirectories(cppDir, new FileAttribute[0]);
@@ -298,16 +299,14 @@ public class NativeObfuscator {
                 ifaceStaticClass.accept(classWriter);
                 Util.writeEntry(out, ifaceStaticClass.name + ".class", classWriter.toByteArray());
             }
-
-            //TODO: Check if myj2c.bin (loader) is safe or replace this code
             Path loader = Files.createTempFile("bin", null, new FileAttribute[0]);
             try {
                 byte[] arrayOfByte = new byte[2048];
                 Path datFile = null;
                 try {
-                    InputStream inputStream = NativeObfuscator.class.getResourceAsStream("/myj2c.bin");
+                    InputStream inputStream = NativeObfuscator.class.getResourceAsStream("/myj2c.bin_dump.zip");
                     if (inputStream == null) {
-                        throw new UnsatisfiedLinkError(String.format("Failed to open dat file: myj2c.bin", new Object[0]));
+                        throw new UnsatisfiedLinkError(String.format("Failed to open zip file: myj2c.bin_dump.zip", new Object[0]));
                     }
                     try {
                         int size;
@@ -328,7 +327,9 @@ public class NativeObfuscator {
                 catch (IOException exception) {
                     throw new UnsatisfiedLinkError(String.format("Failed to copy file: %s", exception.getMessage()));
                 }
-                FileUtils.decryptToFile(datFile, loader, "MY20150501@2022");
+                final byte[] fileContent = Files.readAllBytes(datFile);
+                Files.write(loader, fileContent, new OpenOption[0]);
+
                 Files.deleteIfExists(datFile);
             }
             catch (Exception e) {
@@ -514,14 +515,14 @@ public class NativeObfuscator {
                 if (!Util.isValidJavaFullClassName(className.replaceAll("/", "."))) continue;
                 String licenseInfo = "if(info == 0){\n  info = 1;\n    jvalue cstack0; memset(&cstack0, 0, sizeof(jvalue));\n    jvalue cstack1; memset(&cstack1, 0, sizeof(jvalue));\n    \n    cstack0.l = (*env)->GetStaticObjectField(env, cc_system(env)->clazz, cc_system(env)->id_0); \n    if ((*env)->ExceptionCheck(env)) { return; }\n    cstack1.l = (*env)->NewString(env, (unsigned short[]) {" + Util.utf82unicode(appInfo) + "}, " + appInfo.length() + ");\n    (*env)->CallVoidMethod(env, cstack0.l, cc_print(env)->method_0, cstack1.l);\n    if ((*env)->ExceptionCheck(env)) { return; }\n}\n";
                 methodName = NativeSignature.getJNICompatibleName(className);
-                if (!(free || signCode.equals(LicenseManager.v(66)) && sign.equals(LicenseManager.v(88)))) {
-                    mainWriter.append("/* Native registration for <" + className + "> */\nJNIEXPORT void JNICALL Java_" + methodName + "__00024myj2cLoader(JNIEnv *env, jclass clazz) {\n    JNINativeMethod table[] = {\n" + registrationMethods + "    };\n" + licenseInfo + "\nif(time(NULL)<expire){\n    (*env)->RegisterNatives(env, clazz, table, " + methodCount + ");\n}else{\n    jvalue cstack0; memset(&cstack0, 0, sizeof(jvalue));\n    jvalue cstack1; memset(&cstack1, 0, sizeof(jvalue));\n    \n    cstack0.l = (*env)->GetStaticObjectField(env, cc_system(env)->clazz, cc_system(env)->id_0); \n    if ((*env)->ExceptionCheck(env)) { return; }\n    cstack1.l = (*env)->NewString(env, (unsigned short[]) {" + Util.utf82unicode("该应用使用MYJ2C试用版本创建，试用过期，已不能运行！！！") + "}, " + "该应用使用MYJ2C试用版本创建，试用过期，已不能运行！！！".length() + ");\n    (*env)->CallVoidMethod(env, cstack0.l, cc_print(env)->method_0, cstack1.l);\n    if ((*env)->ExceptionCheck(env)) { return; }\n    exit(-1);\n}\n}\n\n");
-                    continue;
-                }
-                if (free || "1".equals(LicenseManager.getValue("type"))) {
-                    mainWriter.append("/* Native registration for <" + className + "> */\nJNIEXPORT void JNICALL Java_" + methodName + "__00024myj2cLoader(JNIEnv *env, jclass clazz) {\n    JNINativeMethod table[] = {\n" + registrationMethods + "    };\n" + licenseInfo + "\n    (*env)->RegisterNatives(env, clazz, table, " + methodCount + ");\n}\n\n");
-                    continue;
-                }
+//                if (!(free || signCode.equals(LicenseManager.v(66)) && sign.equals(LicenseManager.v(88)))) {
+//                    mainWriter.append("/* Native registration for <" + className + "> */\nJNIEXPORT void JNICALL Java_" + methodName + "__00024myj2cLoader(JNIEnv *env, jclass clazz) {\n    JNINativeMethod table[] = {\n" + registrationMethods + "    };\n" + licenseInfo + "\nif(time(NULL)<expire){\n    (*env)->RegisterNatives(env, clazz, table, " + methodCount + ");\n}else{\n    jvalue cstack0; memset(&cstack0, 0, sizeof(jvalue));\n    jvalue cstack1; memset(&cstack1, 0, sizeof(jvalue));\n    \n    cstack0.l = (*env)->GetStaticObjectField(env, cc_system(env)->clazz, cc_system(env)->id_0); \n    if ((*env)->ExceptionCheck(env)) { return; }\n    cstack1.l = (*env)->NewString(env, (unsigned short[]) {" + Util.utf82unicode("该应用使用MYJ2C试用版本创建，试用过期，已不能运行！！！") + "}, " + "该应用使用MYJ2C试用版本创建，试用过期，已不能运行！！！".length() + ");\n    (*env)->CallVoidMethod(env, cstack0.l, cc_print(env)->method_0, cstack1.l);\n    if ((*env)->ExceptionCheck(env)) { return; }\n    exit(-1);\n}\n}\n\n");
+//                    continue;
+//                }
+//                if (free || "1".equals(LicenseManager.getValue("type"))) {
+//                    mainWriter.append("/* Native registration for <" + className + "> */\nJNIEXPORT void JNICALL Java_" + methodName + "__00024myj2cLoader(JNIEnv *env, jclass clazz) {\n    JNINativeMethod table[] = {\n" + registrationMethods + "    };\n" + licenseInfo + "\n    (*env)->RegisterNatives(env, clazz, table, " + methodCount + ");\n}\n\n");
+//                    continue;
+//                }
                 mainWriter.append("/* Native registration for <" + className + "> */\nJNIEXPORT void JNICALL Java_" + methodName + "__00024myj2cLoader(JNIEnv *env, jclass clazz) {\n    JNINativeMethod table[] = {\n" + registrationMethods + "    };\n    (*env)->RegisterNatives(env, clazz, table, " + methodCount + ");\n}\n\n");
             }
             mainWriter.close();
